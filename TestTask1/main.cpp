@@ -22,15 +22,15 @@ int getRandomNumber(int min_value, int max_value)
 	return min_value + rand() % max_value;
 }
 
-//rearrange vector to begin with survived elements and get iterator to "erase from" position class T, class Alloc = allocator<T>
-template<typename SampleType>
-std::vector<int>::iterator deleteMismatches(std::vector<int>& vec_to_process, const SampleType& set_to_compare)
-{
-	std::vector<int>::iterator delim_pos = std::remove_if(vec_to_process.begin(), vec_to_process.end(), [set_to_compare](int i)->bool
+//rearrange vector to begin with survived elements and get iterator to "erase from" position
+template<typename T, template <typename, typename> class SampleType>
+typename std::vector<T, std::allocator<T>>::iterator deleteMismatches(std::vector<T, std::allocator<T>>& vec_to_process, const SampleType<T, std::allocator<T>>& seq_to_compare)
+{	
+	typename std::vector<T, std::allocator<T>>::iterator delim_pos = std::remove_if(vec_to_process.begin(), vec_to_process.end(), [seq_to_compare](T i)->bool
 	{
-		for (SampleType::const_iterator iset = set_to_compare.cbegin(); iset != set_to_compare.cend(); ++iset)
+		for (typename SampleType<T, std::allocator<T>>::const_iterator it = seq_to_compare.cbegin(); it != seq_to_compare.cend(); ++it)
 		{
-			if (*iset == i)
+			if (*it == i)
 				return false;
 		}
 		return true;
@@ -50,7 +50,7 @@ int main(int, char*[])
 		mmap[i] = getRandomNumber(1, max_random_value);
 	}
 
-	/*Debug info****************************************************************/
+	/*Result****************************************************************/
 	std::cout << "Initialize sequences: " << std::endl;
 	std::cout << std::setw(10) << std::right << "Vector: ";
 	for (std::vector<int>::iterator itv = vec.begin(); itv != vec.end(); ++itv)
@@ -61,7 +61,7 @@ int main(int, char*[])
 	std::cout << itm->second << ' ';
 	std::cout << std::endl;
 	std::cout << std::endl;
-	//Debug info***************************************************************
+	//Result***************************************************************
 
 	//2. Delete random number of values
 	int deleted_number_vec = getRandomNumber(0, deleted_numbers);
@@ -73,8 +73,8 @@ int main(int, char*[])
 	std::map<int, int>::iterator it = mmap.find(N - deleted_number_mmap);
 	mmap.erase(it, mmap.end());
 
-	/*Debug info****************************************************************/
-	std::cout << "Deleting elements: " << std::endl;
+	/*Result****************************************************************/
+	std::cout << "Deletó random elements: " << std::endl;
 	std::cout << std::setw(10) << std::right << "Vector: ";
 	for (std::vector<int>::iterator itv = vec.begin(); itv != vec.end(); ++itv)
 		std::cout << *itv << ' ';
@@ -84,7 +84,7 @@ int main(int, char*[])
 		std::cout << itm->second << ' ';
 	std::cout << std::endl;
 	std::cout << std::endl;
-	//Debug info***************************************************************
+	//Result***************************************************************
 
 	//3. Delete mismatches
 
@@ -100,38 +100,11 @@ int main(int, char*[])
 	});
 
 	//apply remove_if and delete elements starting from delimeter position
-	std::vector<int>::iterator delim_pos_vec = deleteMismatches<std::vector<int>>(vec, map_copy);
-
-	/*Debug info***************************************************************
-	std::cout << "Remove if: " << std::endl;
-	std::cout << std::setw(10) << std::right << "Vector: ";
-	for (std::vector<int>::iterator itv = vec.begin(); itv != vec.end(); ++itv)
-		std::cout << *itv << ' ';
-	std::cout << std::endl;
-	//Debug info****************************************************************/
-
+	std::vector<int>::iterator delim_pos_vec = deleteMismatches<int, std::vector>(vec, map_copy);
 	vec.erase(delim_pos_vec, vec.end());
 
-	std::vector<int>::iterator delim_pos_map = deleteMismatches<std::vector<int>>(map_copy, vec);
-
-	/*Debug info***************************************************************
-	std::cout << std::setw(10) << std::right << "Map_copy: ";
-	for (std::vector<int>::iterator itm = map_copy.begin(); itm != map_copy.end(); ++itm)
-		std::cout << *itm << ' ';
-	std::cout << std::endl;
-	std::cout << std::endl;
-	//Debug info****************************************************************/
-
+	std::vector<int>::iterator delim_pos_map = deleteMismatches<int, std::vector>(map_copy, vec);
 	map_copy.erase(delim_pos_map, map_copy.end());
-
-	/*Debug info***************************************************************
-	std::cout << "Erase Map_copy: " << std::endl;
-	std::cout << std::setw(10) << std::right << "Map_copy: ";
-	for (std::vector<int>::iterator itm = map_copy.begin(); itm != map_copy.end(); ++itm)
-		std::cout << *itm << ' ';
-	std::cout << std::endl;
-	std::cout << std::endl;
-	//Debug info****************************************************************/
 	
 	//transofrm back to map
 	mmap.clear();
@@ -140,8 +113,8 @@ int main(int, char*[])
 		mmap[it - map_copy.begin()] = *it;
 	}
 
-	/*Debug info****************************************************************/
-	std::cout << "Remove distinct: " << std::endl;
+	/*Result****************************************************************/
+	std::cout << "Synchronize: " << std::endl;
 	std::cout << std::setw(10) << std::right << "Vector: ";
 	for (std::vector<int>::iterator itv = vec.begin(); itv != vec.end(); ++itv)
 		std::cout << *itv << ' ';
@@ -151,7 +124,7 @@ int main(int, char*[])
 		std::cout << itm->second << ' ';
 	std::cout << std::endl;
 	std::cout << std::endl;
-	//Debug info***************************************************************
+	//Result***************************************************************
 
 	_getch();
 	return 0;
