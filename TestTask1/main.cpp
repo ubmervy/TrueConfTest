@@ -9,10 +9,10 @@
 #include <algorithm> 
 #include <iterator>
 
-#define N 10 //number of initial sequence elements
+#define N 20 //number of initial sequence elements
 #define min_value 1 //values' min bound
 #define max_value 9 //values' max bound
-#define deleted_numbers 8 //max number of deleted elements
+#define deleted_numbers 15 //max number of deleted elements
 
 std::vector<int> vec;
 std::map<int, int> mmap;
