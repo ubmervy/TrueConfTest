@@ -10,16 +10,18 @@
 #include <iterator>
 
 #define N 10 //number of initial sequence elements
-#define max_random_value 9 //values' max bound
+#define min_value 1 //values' min bound
+#define max_value 9 //values' max bound
 #define deleted_numbers 8 //max number of deleted elements
 
 std::vector<int> vec;
 std::map<int, int> mmap;
 
 //get random number
-int getRandomNumber(int min_value, int max_value)
+template<typename T>
+int getRandomNumber(T min_random_value, T max_random_value)
 {
-	return min_value + rand() % max_value;
+	return min_random_value + rand() % max_random_value;
 }
 
 //rearrange vector to begin with survived elements and get iterator to "erase from" position
@@ -46,8 +48,8 @@ int main(int, char*[])
 	for (int i = 0; i < N; i++)
 	{
 		vec.resize(N);
-		vec[i] = getRandomNumber(1, max_random_value);
-		mmap[i] = getRandomNumber(1, max_random_value);
+		vec[i] = getRandomNumber<int>(min_value, max_value);
+		mmap[i] = getRandomNumber<int>(min_value, max_value);
 	}
 
 	/*Result****************************************************************/
